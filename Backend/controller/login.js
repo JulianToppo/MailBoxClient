@@ -29,10 +29,11 @@ const loginUser = async (req, res) => {
       },
     });
 
-    console.log(userFound);
+  
     if (userFound) {
-      const passwordCheck = await comparePassword(result.password, password);
+      const passwordCheck = await comparePassword(userFound.password, password);
       if (passwordCheck) {
+        console.log("check1")
         res
           .status(200)
           .json({
@@ -41,6 +42,7 @@ const loginUser = async (req, res) => {
             token: generateToken(userFound.id)
           });
       } else {
+        console.log("check2")
         res.status(401).json({ message: "Wrong Password", status: false });
       }
     } else {
