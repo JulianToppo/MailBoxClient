@@ -42,11 +42,11 @@ const loginUser = async (req, res) => {
             token: generateToken(userFound.id)
           });
       } else {
-        console.log("check2")
+        
         res.status(401).json({ message: "Wrong Password", status: false });
       }
     } else {
-      res.status(401).json({ message: "Invalid Password", status: false });
+      res.status(401).json({ message: "Invalid Email", status: false });
     }
   } catch (error) {
     res.status(500).json({ message: error.message, status: false });

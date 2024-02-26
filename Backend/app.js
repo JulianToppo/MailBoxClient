@@ -1,11 +1,17 @@
 const express = require("express");
-const signupRoutes = require("./routes/signup");
-const loginRoutes = require("./routes/login");
 const app = express();
 const cors = require("cors");
 const bodyparser = require("body-parser");
-const db = require("./util/database");
 
+//Routes
+const signupRoutes = require("./routes/signup");
+const loginRoutes = require("./routes/login");
+const mailRoutes = require("./routes/mail")
+
+
+//DB
+const db = require("./util/database");
+const mailModel= require("./model/mails")
 const userModel = require("./model/user");
 
 const port = 3000;
@@ -18,6 +24,10 @@ app.use(
 );
 app.use(signupRoutes);
 app.use(loginRoutes);
+app.use(mailRoutes);
+
+userModel.hasMany(mailModel),
+mailModel.belongsTo(userModel)
 
 app.get("/", (req, res) => {
   console.log("hello world");
