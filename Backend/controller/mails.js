@@ -71,8 +71,28 @@ const updateRead = async (req, res) => {
     res.status(500).json({ message: error, status: true });
   }
 };
+
+const deleteMail=(req,res)=>{
+try {
+  const id= req.params.id
+
+  mail.destroy({
+    where:{
+      id:id
+    }
+  }).then((result)=>{
+    res.status(200).json({message:"Mail has been deleted",status:true})
+  }).catch(err=>{
+    res.status(400).json({message:err,status:false})
+  })
+} catch (error) {
+  res.status(500).json({message:error,status:false})
+}
+}
+
 module.exports = {
   sendmail,
   getAllMails,
-  updateRead
+  updateRead,
+  deleteMail
 };

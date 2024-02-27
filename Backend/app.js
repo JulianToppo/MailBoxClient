@@ -19,7 +19,7 @@ app.use(bodyparser.json({ extended: false }));
 app.use(
   cors({
     origin: "*",
-    methods: [],
+    methods: ['GET','POST','DELETE','PUT'],
   })
 );
 app.use(signupRoutes);
