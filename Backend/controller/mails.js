@@ -19,6 +19,7 @@ const sendmail = async (req, res) => {
       content: content,
       subject: subject,
       userId: req.user.id,
+      read: false,
     });
 
     if (userCreate) {
@@ -45,7 +46,33 @@ const getAllMails = async (req, res) => {
     res.status(500).json({ error: error.message, status: false });
   }
 };
+
+const updateRead = async (req, res) => {
+  try {
+    const { id } = req.body;
+    console.log(id)
+    const mailItem = await mail.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (mailItem) {
+      mailItem.read = true;
+      mailItem.save();
+
+      res
+        .status(201)
+        .json({ message: "Mail read updates successfully", status: true });
+    } else {
+      res.status(400).json({ message: "Mail id not found", status: true });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error, status: true });
+  }
+};
 module.exports = {
   sendmail,
   getAllMails,
+  updateRead
 };

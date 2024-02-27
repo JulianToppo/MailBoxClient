@@ -20,6 +20,10 @@ const mail = sequelize.define("mail", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  read:{
+    type:Sequelize.BOOLEAN,
+    allowNull:false
+  }
 });
 
 module.exports = mail;
