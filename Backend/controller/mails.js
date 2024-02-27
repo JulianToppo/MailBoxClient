@@ -89,10 +89,24 @@ try {
   res.status(500).json({message:error,status:false})
 }
 }
-
+const getAllSentMail= async(req,res)=>{
+  try {
+    const allmail = await mail.findAll({
+      where: {
+        userId: req.user.id,
+      },
+    });
+    if (allmail) {
+      res.status(200).json({ mailElements: allmail, status: true });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message, status: false });
+  }
+}
 module.exports = {
   sendmail,
   getAllMails,
   updateRead,
-  deleteMail
+  deleteMail,
+  getAllSentMail
 };
