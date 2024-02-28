@@ -4,13 +4,14 @@ const bcrypt = require("bcrypt");
 const signupUser = async (req, res) => {
   try {
     console.log("SignUp Check");
-    const { email, password } = req.body;
+    const { email, password,username } = req.body;
     const saltrounds = 10;
     const hashedpassword = await bcrypt.hash(password, saltrounds);
     userTable
       .create({
         email: email,
         password: hashedpassword,
+        username:username
       })
       .then((result) => {
         console.log(result);

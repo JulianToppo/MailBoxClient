@@ -58,7 +58,7 @@ const ComposeEmail = () => {
     sendMailRequest(rawContentState);
   };
   return (
-    <div className="w-9/12 flex h-svh flex-col mt-12 p-4 border  space-y-4">
+    <div className="w-9/12 flex h-svh flex-col justify-center items-center mt-12 p-4 border  space-y-4">
       <div className="flex w-full">
         <label>To:</label>{" "}
         <input ref={emailTo} className="w-full mx-5" type="text"></input>

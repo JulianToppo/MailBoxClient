@@ -50,13 +50,14 @@ const getAllMails = async (req, res) => {
 const updateRead = async (req, res) => {
   try {
     const { id } = req.body;
-    console.log(id)
+  
     const mailItem = await mail.findOne({
       where: {
         id: id,
       },
     });
 
+    console.log(mailItem)
     if (mailItem) {
       mailItem.read = true;
       mailItem.save();
@@ -68,7 +69,7 @@ const updateRead = async (req, res) => {
       res.status(400).json({ message: "Mail id not found", status: true });
     }
   } catch (error) {
-    res.status(500).json({ message: error, status: true });
+    res.status(500).json({ message: error.message, status: false });
   }
 };
 
@@ -103,10 +104,43 @@ const getAllSentMail= async(req,res)=>{
     res.status(500).json({ error: error.message, status: false });
   }
 }
+
+const getUserDetails= (req,res)=>{
+  try {
+    const {id}= req.body;
+    if(!id){
+      id=req.id
+    }
+   const userFound= user.findOne({
+      where:{
+        id:id
+      }
+    })
+
+    if (userFound) {
+
+        res
+          .status(200)
+          .json({
+            message: "User has been logged in",
+            status: true,
+            email:userFound.email,
+            username:userFound.username,
+            token: generateToken(userFound.id)
+          });
+      } else {
+        
+        res.status(401).json({ message: "Invalid User", status: false });
+      }
+    }  catch (error) {
+      res.status(500).json({message:error.message,status:false})
+  }
+}
 module.exports = {
   sendmail,
   getAllMails,
   updateRead,
   deleteMail,
-  getAllSentMail
+  getAllSentMail,
+  getUserDetails
 };

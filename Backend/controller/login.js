@@ -39,6 +39,8 @@ const loginUser = async (req, res) => {
           .json({
             message: "User has been logged in",
             status: true,
+            email:userFound.email,
+            username:userFound.username,
             token: generateToken(userFound.id)
           });
       } else {

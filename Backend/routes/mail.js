@@ -8,5 +8,6 @@ router.get('/getallmail',authorization.Authorization,mailController.getAllMails)
 router.get('/getallsentmail',authorization.Authorization,mailController.getAllSentMail)
 router.post('/updateemail',authorization.Authorization,mailController.updateRead)
 router.delete('/deletemail/:id',authorization.Authorization,mailController.deleteMail)
+router.get('/getuserdetails',authorization.Authorization,mailController.getUserDetails)
 
  module.exports=router;

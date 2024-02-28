@@ -2,11 +2,18 @@ import React, { useState } from "react";
 import { useRef } from "react";
 import { backendURL } from "../utils/constants";
 import { useNavigate } from "react-router-dom";
+
+import {useDispatch, useSelector} from "react-redux"
+import { loginUser } from "../store/userSlice";
+
 const SignUp = () => {
   const email = useRef();
   const password = useRef();
+  const username= useRef();
   const confirmpassword = useRef();
   const navigate = useNavigate();
+  const userStore= useSelector((store)=>store.user)
+  const dispatch= useDispatch();
 
   const [isLogin, setisLogin] = useState(false);
 
@@ -49,7 +56,11 @@ const SignUp = () => {
       if (response.ok) {
         console.log("User has successfully logged in");
         localStorage.setItem('token',data.token)
-        navigate("/home");
+        dispatch(loginUser({details:{
+          'username':data.username,
+          'email':data.email
+        }}))
+        navigate("/inbox");
       } else {
         console.log("Data Error",data.message)
         throw new Error(data.message);
@@ -66,20 +77,26 @@ const SignUp = () => {
       alert("Passwords not matched");
     }
     console.log(email.current.value, password.current.value);
-    const formObj = {
+    
+
+    if (isLogin) {const formObj = {
       email: email.current.value,
       password: password.current.value,
     };
-
-    if (isLogin) {
       sendLoginRequest(formObj);
       email.current.value = "";
       password.current.value = "";
     } else {
+      const formObj = {
+        email: email.current.value,
+        password: password.current.value,
+        username:username.current.value
+      };
       sendSignpUpRequest(formObj);
       email.current.value = "";
       password.current.value = "";
       confirmpassword.current.value = "";
+      username.current.value=""
     }
   };
 
@@ -112,7 +129,8 @@ const SignUp = () => {
               required
             ></input>
           </div>
-          {!isLogin && (
+          {!isLogin && (<>
+         
             <div className="flex flex-col">
               <label>Confirm Password:</label>
               <input
@@ -122,6 +140,16 @@ const SignUp = () => {
                 required
               ></input>
             </div>
+            <div className="flex flex-col">
+             <label>Username:</label>
+             <input
+               className="rounded-md p-2 "
+               ref={username}
+               type="text"
+               required
+             ></input>
+           </div>
+           </>
           )}
           <button className="bg-lime-300 p-3 rounded-2xl" type="submit">
             {isLogin ? "Login" : "Sign Up"}
