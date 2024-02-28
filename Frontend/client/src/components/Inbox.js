@@ -9,6 +9,8 @@ import {
   updateReadInMail,
 } from "../store/mailSlice";
 import { useDispatch, useSelector } from "react-redux";
+import useApiCall from "../hooks/useApiCall";
+
 
 const Inbox = () => {
   const [allmails, setallmails] = useState([]);
@@ -20,6 +22,20 @@ const Inbox = () => {
   const navigate = useNavigate();
   const mailStore = useSelector((store) => store.mail);
   const dispatch = useDispatch();
+
+ useApiCall(backendURL + "getallmail", true,(data)=>{
+    data && dispatch(setMail({ mail: data.mailElements }))
+  });
+ 
+console.log("This is rendered again")
+useApiCall(
+    backendURL + "getallsentmail",
+    showSentMessages,(data)=>{
+        {data && dispatch(setSentMail({ mail: data.mailElements }));}
+    }
+  );
+
+
 
   useEffect(() => {
     setSentMails(mailStore.sentMails);
@@ -35,57 +51,57 @@ const Inbox = () => {
     setTotalUnread(mailStore.totalUnread);
   }, [mailStore.mails]);
 
-  const getAllMails = async () => {
-    try {
-      console.log("get all mails called");
-      const response = await fetch(backendURL + "getallmail", {
-        method: "GET",
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      });
+  // const getAllMails = async () => {
+  //   try {
+  //     console.log("get all mails called");
+  //     const response = await fetch(backendURL + "getallmail", {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: localStorage.getItem("token"),
+  //       },
+  //     });
 
-      const data = await response.json();
-      if (response.ok) {
-        console.log("data fetchedddd", data);
-        dispatch(setMail({ mail: data.mailElements }));
-        // dispatch(getTotalUnreadMails());
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       console.log("data fetchedddd", data);
+  //       dispatch(setMail({ mail: data.mailElements }));
+  //       // dispatch(getTotalUnreadMails());
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  const getAllSentMails = async () => {
-    try {
-      console.log("get all sent mails called");
-      const response = await fetch(backendURL + "getallsentmail", {
-        method: "GET",
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      });
+  // const getAllSentMails = async () => {
+  //   try {
+  //     console.log("get all sent mails called");
+  //     const response = await fetch(backendURL + "getallsentmail", {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: localStorage.getItem("token"),
+  //       },
+  //     });
 
-      const data = await response.json();
-      if (response.ok) {
-        console.log("data fetched", data);
-        dispatch(setSentMail({ mail: data.mailElements }));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       console.log("data fetched", data);
+  //       dispatch(setSentMail({ mail: data.mailElements }));
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      console.log("setitmeoutcalled ")
-      getAllMails();
-    }, 2000);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     console.log("setitmeoutcalled ")
+  //     getAllMails();
+  //   }, 2000);
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [getAllMails]);
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, [getAllMails]);
 
   const onclickCompose = (e) => {
     e.preventDefault();
@@ -152,12 +168,13 @@ const Inbox = () => {
     updateReadMessage(messageObj.id);
   };
 
-  const onClickShowSentMails = (e) => {
+  const OnClickShowSentMails = (e) => {
     e.preventDefault();
 
     setShowMailMessage(false);
     setShowSentMailMessage(true);
-    getAllSentMails();
+    // getAllSentMails();
+   
   };
 
   return (
@@ -181,7 +198,7 @@ const Inbox = () => {
             <p>Unread</p>
             <p>Starred</p>
             <p>Drafts</p>
-            <p className="cursor-pointer" onClick={onClickShowSentMails}>
+            <p className="cursor-pointer" onClick={OnClickShowSentMails}>
               Sent
             </p>
             <p>Archive</p>
