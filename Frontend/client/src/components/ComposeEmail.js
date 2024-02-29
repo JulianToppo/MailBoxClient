@@ -4,8 +4,10 @@ import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useState } from "react";
 import { backendURL } from "../utils/constants";
+import { useNavigate } from "react-router-dom";
 
 const ComposeEmail = () => {
+  const navigate = useNavigate();
   const emailTo = useRef();
   const subject = useRef();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -57,8 +59,16 @@ const ComposeEmail = () => {
 
     sendMailRequest(rawContentState);
   };
+
+  const onclickBack= (e)=>{
+    e.preventDefault();
+    navigate('/inbox')
+  }
+  
   return (
-    <div className="w-9/12 flex h-svh flex-col justify-center items-center mt-12 p-4 border  space-y-4">
+    <div className="flex flex-col justify-center items-center">
+      <div><button onClick={onclickBack}>{'< Back'}</button></div>
+        <div className="w-9/12 flex h-svh flex-col justify-center items-center mt-12 p-4  bg-slate-200 border  space-y-4">
       <div className="flex w-full">
         <label>To:</label>{" "}
         <input ref={emailTo} className="w-full mx-5" type="text"></input>
@@ -85,6 +95,8 @@ const ComposeEmail = () => {
         Send
       </button>
     </div>
+    </div>
+  
   );
 };
 
