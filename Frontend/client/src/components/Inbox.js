@@ -13,6 +13,7 @@ import useApiCall from "../hooks/useApiCall";
 import useCrudForMail from "../hooks/useCrudForMail";
 import Header from "./Header";
 import UserCredentials from "./UserCredentials";
+import io from "socket.io-client";
 
 const Inbox = () => {
   const [allmails, setallmails] = useState([]);
@@ -25,18 +26,33 @@ const Inbox = () => {
   const mailStore = useSelector((store) => store.mail);
   const dispatch = useDispatch();
 
-  const { getAllMailDB, getAllSentMailDB, deleteMailDB, updateMailDB ,getUserData } =
-    useCrudForMail();
+  const {
+    getAllMailDB,
+    getAllSentMailDB,
+    deleteMailDB,
+    updateMailDB,
+    getUserData,
+  } = useCrudForMail();
 
   useEffect(() => {
-    const time = setTimeout(() => {
+    const socket = io(backendURL,{transports: ['websocket', 'polling', 'flashsocket']}); 
+
+    socket.on("message", (data) => {
+      alert("Check your messages ");
+      console.log("Received message from server:", data);
       getAllMailDB();
-    }, 10000);
+    });
 
     return () => {
-      clearTimeout(time);
+      socket.disconnect();
     };
-  }, [getAllMailDB]);
+  }, []);
+
+  useEffect(() => {
+   
+      getAllMailDB();
+   
+  }, []);
 
   useEffect(() => {
     setSentMails(mailStore.sentMails);
@@ -65,19 +81,19 @@ const Inbox = () => {
     e.preventDefault();
     setShowMailMessage(false);
     setShowSentMailMessage(true);
-    console.log("show sent mails")
+    console.log("show sent mails");
     getAllSentMailDB();
   };
 
-  const onclickShowInbox= (e)=>{
+  const onclickShowInbox = (e) => {
     e.preventDefault();
     setShowMailMessage(false);
     setShowSentMailMessage(false);
-  }
+  };
 
   return (
     <div className="h-screen">
-     <Header/>
+      <Header />
 
       <div className="flex  h-full bg-red-300">
         <div className="w-2/12 bg-slate-400">
@@ -89,7 +105,9 @@ const Inbox = () => {
           </button>
 
           <div className="flex flex-col space-y-3 m-2 ">
-            <p  className="cursor-pointer" onClick={onclickShowInbox}>Inbox {mailStore.totalUnread}</p>
+            <p className="cursor-pointer" onClick={onclickShowInbox}>
+              Inbox {mailStore.totalUnread}
+            </p>
             <p>Unread</p>
             <p>Starred</p>
             <p>Drafts</p>
@@ -105,15 +123,16 @@ const Inbox = () => {
           <div className="w-full bg-green-50">
             <table className="table-auto w-full p-4 text-left">
               <thead>
-                <tr >
+                <tr>
                   <th className="px-6 py-2 ">Sender</th>
                   <th>Messages</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {allmails && !showSentMessages &&
-                  allmails.map((item) => {
+                {allmails &&
+                  !showSentMessages &&
+                  allmails.slice().reverse().map((item,index) => {
                     // console.log(item);
                     return (
                       <tr
@@ -135,7 +154,7 @@ const Inbox = () => {
                             onClickMessage(item);
                           }}
                         >
-                          {item.content.slice(0,15)}....
+                          {item.content.slice(0, 15)}....
                         </th>
                         <th>
                           <button
@@ -175,7 +194,7 @@ const Inbox = () => {
                             onClickMessage(item);
                           }}
                         >
-                          {item.content.slice(0,15)}
+                          {item.content.slice(0, 15)}
                         </th>
                         <th>
                           <button
@@ -199,7 +218,7 @@ const Inbox = () => {
             <div>
               <div className="flex justify-around">
                 {/* <div>{getUserData}<div> */}
-                
+
                 <div
                   onClick={() => {
                     setShowMailMessage(!showMailMessage);

@@ -23,6 +23,11 @@ const sendmail = async (req, res) => {
     });
 
     if (userCreate) {
+      console.log("After user createe")
+      if(req.io){
+           req.io.emit('message',{"juliandataaaaaaaaa":"check this out from socket"})
+      }
+   
       res
         .status(201)
         .json({ message: "Mail Sent successfully", status: false });
