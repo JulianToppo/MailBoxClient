@@ -8,6 +8,7 @@ import {
   updateReadInMail,
 } from "../store/mailSlice";
 import { useDispatch } from "react-redux";
+import { loginUser } from "../store/userSlice";
 
 const useCrudForMail = () => {
   //  getall, getsentmail,deleteMailDB,updateEmailDB
@@ -62,11 +63,38 @@ const useCrudForMail = () => {
       }),
       headers: {
         Authorization: localStorage.getItem("token"),
-        'Content-Type':'application/json'
+        "Content-Type": "application/json",
       },
     });
 
     dispatch(updateReadInMail({ id: id }));
+  };
+
+  const setUserData = async (id) => {
+    console.log(id)
+    const data = await fetchData(backendURL + "getuserdetails/"+id, {
+      method: "GET",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    });
+
+    console.log(data);
+    if (data) {
+      dispatch(loginUser({details:{ username: data.username, email: data.email} }));
+    }
+  };
+
+  const getUserData = async (id) => {
+    console.log(id)
+    const data = await fetchData(backendURL + "getuserdetails/"+id, {
+      method: "GET",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    });
+
+    return data;
   };
 
   return {
@@ -74,6 +102,8 @@ const useCrudForMail = () => {
     getAllSentMailDB,
     deleteMailDB,
     updateMailDB,
+    getUserData,
+    setUserData
   };
 };
 

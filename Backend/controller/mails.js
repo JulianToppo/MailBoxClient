@@ -50,14 +50,14 @@ const getAllMails = async (req, res) => {
 const updateRead = async (req, res) => {
   try {
     const { id } = req.body;
-  
+
     const mailItem = await mail.findOne({
       where: {
         id: id,
       },
     });
 
-    console.log(mailItem)
+    console.log(mailItem);
     if (mailItem) {
       mailItem.read = true;
       mailItem.save();
@@ -73,24 +73,29 @@ const updateRead = async (req, res) => {
   }
 };
 
-const deleteMail=(req,res)=>{
-try {
-  const id= req.params.id
+const deleteMail = (req, res) => {
+  try {
+    const id = req.params.id;
 
-  mail.destroy({
-    where:{
-      id:id
-    }
-  }).then((result)=>{
-    res.status(200).json({message:"Mail has been deleted",status:true})
-  }).catch(err=>{
-    res.status(400).json({message:err,status:false})
-  })
-} catch (error) {
-  res.status(500).json({message:error,status:false})
-}
-}
-const getAllSentMail= async(req,res)=>{
+    mail
+      .destroy({
+        where: {
+          id: id,
+        },
+      })
+      .then((result) => {
+        res
+          .status(200)
+          .json({ message: "Mail has been deleted", status: true });
+      })
+      .catch((err) => {
+        res.status(400).json({ message: err, status: false });
+      });
+  } catch (error) {
+    res.status(500).json({ message: error, status: false });
+  }
+};
+const getAllSentMail = async (req, res) => {
   try {
     const allmail = await mail.findAll({
       where: {
@@ -103,44 +108,43 @@ const getAllSentMail= async(req,res)=>{
   } catch (error) {
     res.status(500).json({ error: error.message, status: false });
   }
-}
+};
 
-const getUserDetails= (req,res)=>{
+const getUserDetails =async (req, res) => {
   try {
-    const {id}= req.body;
-    if(!id){
-      id=req.id
+    let { id } = req.params;
+   
+    if (id == 'undefined' || id === null || id === '') {
+
+      id = req.user.id;
     }
-   const userFound= user.findOne({
-      where:{
-        id:id
-      }
-    })
+    console.log(id)
+    const userFound =await user.findOne({
+      where: {
+        id: id,
+      },
+    });
 
+    console.log("user Found",userFound)
     if (userFound) {
-
-        res
-          .status(200)
-          .json({
-            message: "User has been logged in",
-            status: true,
-            email:userFound.email,
-            username:userFound.username,
-            token: generateToken(userFound.id)
-          });
-      } else {
-        
-        res.status(401).json({ message: "Invalid User", status: false });
-      }
-    }  catch (error) {
-      res.status(500).json({message:error.message,status:false})
+      res.status(200).json({
+        message: "User has been logged in",
+        status: true,
+        email: userFound.email,
+        username: userFound.username,
+      });
+    } else {
+      res.status(401).json({ message: "Invalid User", status: false });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message, status: false });
   }
-}
+};
 module.exports = {
   sendmail,
   getAllMails,
   updateRead,
   deleteMail,
   getAllSentMail,
-  getUserDetails
+  getUserDetails,
 };

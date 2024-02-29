@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import useApiCall from "../hooks/useApiCall";
 import useCrudForMail from "../hooks/useCrudForMail";
 import Header from "./Header";
+import UserCredentials from "./UserCredentials";
 
 const Inbox = () => {
   const [allmails, setallmails] = useState([]);
@@ -24,13 +25,13 @@ const Inbox = () => {
   const mailStore = useSelector((store) => store.mail);
   const dispatch = useDispatch();
 
-  const { getAllMailDB, getAllSentMailDB, deleteMailDB, updateMailDB } =
+  const { getAllMailDB, getAllSentMailDB, deleteMailDB, updateMailDB ,getUserData } =
     useCrudForMail();
 
   useEffect(() => {
     const time = setTimeout(() => {
       getAllMailDB();
-    }, 2000);
+    }, 10000);
 
     return () => {
       clearTimeout(time);
@@ -197,6 +198,8 @@ const Inbox = () => {
           <div className="w-full bg-white">
             <div>
               <div className="flex justify-around">
+                {/* <div>{getUserData}<div> */}
+                
                 <div
                   onClick={() => {
                     setShowMailMessage(!showMailMessage);
@@ -207,6 +210,7 @@ const Inbox = () => {
                 {/* <div>{Timeout} */}
               </div>
               <div className="w-full p-6 border border-black">
+                <UserCredentials showMailMessage={showMailMessage} />
                 {showMailMessage.content}
               </div>
             </div>

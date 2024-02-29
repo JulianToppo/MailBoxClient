@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
   console.log("hello world");
 });
 
-db.sync({ force: true })
+db.sync({ force: false })
   .then(() => {
     app.listen(port, () => {
       console.log("app is listening...");

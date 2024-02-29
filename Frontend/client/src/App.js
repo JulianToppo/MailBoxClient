@@ -9,31 +9,26 @@ import useCrudForMail from "./hooks/useCrudForMail";
 import ErrorPage from "./components/ErrorPage";
 function App() {
   const userStore = useSelector((store) => store.user);
-  const {getUserData}=useCrudForMail();
+  const { setUserData } = useCrudForMail();
 
-  useEffect(()=>{
-    if(localStorage.getItem('token')){
-      getUserData();
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      setUserData();
     }
-  },[])
+  }, []);
 
   return (
     <div>
       <Routes>
-       
         {userStore.loginStatus && (
           <>
             <Route path="/home" element={<Home />} />
             <Route path="/inbox" element={<Inbox />} />
-            <Route path="/composemail" element={<ComposeEmail />}/>
+            <Route path="/composemail" element={<ComposeEmail />} />
             <Route path="*" element={<Inbox />} />
-          
           </>
         )}
-        {
-          !userStore.loginStatus &&  <Route path="*" element={<SignUp />} />
-        }
-        
+        {!userStore.loginStatus && <Route path="*" element={<SignUp />} />}
       </Routes>
     </div>
   );

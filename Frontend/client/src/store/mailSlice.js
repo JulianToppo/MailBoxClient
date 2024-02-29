@@ -46,7 +46,7 @@ const mail = createSlice({
                 return item
             })
 
-            state.totalUnread=state.totalUnread-1;
+            state.totalUnread=state.totalUnread>0?state.totalUnread-1:0;
             state.mails=newmap
         },
         deleteMail:(state,action)=>{
